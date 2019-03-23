@@ -1,0 +1,5 @@
+electron/node_modules
+*.pyc
+*.DS_Store
+django/static
+django/db.sqlite3

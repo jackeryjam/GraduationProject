@@ -1,0 +1,30 @@
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin:0; padding:0; }
+body, button, input, select, textarea { font:12px/1.5tahoma, arial, \5b8b\4f53; }
+h1, h2, h3, h4, h5, h6{ font-size:100%; }
+address, cite, dfn, em, var { font-style:normal; }
+code, kbd, pre, samp { font-family:couriernew, courier, monospace; }
+small{ font-size:12px; }
+ul, ol { list-style:none; }
+a { text-decoration:none; }
+a:hover { text-decoration:underline; }
+sup { vertical-align:text-top; }
+sub{ vertical-align:text-bottom; }
+legend { color:#000; }
+fieldset, img { border:0; }
+button, input, select, textarea { font-size:100%; }
+table { border-collapse:collapse; border-spacing:0; }
+
+header h1{
+    font-size: 36px;
+    margin: 12px;
+}
+main{
+    margin: 12px;
+}
+.upload .upload-box{
+    border: 4px dashed #AAA;
+    width: 400px;
+    height: 300px;
+    border-radius: 16px;
+    background-image: url('<svg t="1553342415942" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1098" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M960 512c0 14.08-11.52 25.6-25.6 25.6L537.6 537.6l0 396.8c0 14.08-11.52 25.6-25.6 25.6s-25.6-11.52-25.6-25.6L486.4 537.6 89.6 537.6c-14.08 0-25.6-11.52-25.6-25.6 0-14.08 11.52-25.6 25.6-25.6l396.8 0L486.4 89.6c0-14.08 11.52-25.6 25.6-25.6s25.6 11.52 25.6 25.6l0 396.8 396.8 0C948.48 486.4 960 497.92 960 512z" p-id="1099" fill="#bfbfbf"></path></svg>')
+}
