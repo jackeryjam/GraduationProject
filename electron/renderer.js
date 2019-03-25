@@ -1,6 +1,10 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+var serverUrl = 'http://127.0.0.1:8000/';
+var serverUrl = {
+    upload: serverUrl + 'API/upload'
+};
 (function () {
     this.$ =  require('./lib/jquery-3.3.1.min.js');
     require('./lib/unslider/unslider.min.js')(this.$, false);
@@ -20,6 +24,7 @@
         if (files.length) {
             var file = files[0];
             var reader = new FileReader();//new一个FileReader实例
+        
             if (/image+/.test(file.type)) {//判断文件是不是imgage类型
                 reader.onload = function () {
                     console.log(this)
@@ -34,6 +39,30 @@
                 console.log("Not a pic");
             }
         }
+    }
+
+    var uploading = false;
+    this.uploadImage = function(){
+        $.ajax({
+            url: serverUrl.upload,
+            type: 'POST',
+            cache: false,
+            data: new FormData($('#uploadImage')[0]),
+            processData: false,
+            contentType: false,
+            dataType:"json",
+            beforeSend: function(){
+                uploading = true;
+            },
+            success : function(data) {
+                console.log(data)
+                if (data.code == 200) {
+                    // $("#logo").attr("src", data.msg);
+                } else {
+                }
+                uploading = false;
+            }
+        });
     }
 
     var unslider05 = $('#b05').unslider({

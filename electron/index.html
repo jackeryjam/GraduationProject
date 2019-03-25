@@ -13,11 +13,13 @@
       <article class="upload">
         <section>
           <div class="upload-box" onclick="selectPic()"></div>
-          <input type="file" id="fileSelector" onclick="preventDefault()" onchange="readFile(this.files)"/>
+          <form id="uploadImage" enctype='multipart/form-data' style="display: none;">
+            <input type="file" id="fileSelector" name="file" onclick="preventDefault()" accept="image/*" onchange="readFile(this.files)"/>
+          </form>
         </section>
         <section>
             <button class="el-button el-button--primary">立即拍照</button> 
-            <button class="el-button el-button--primary">上传分割</button> 
+            <button class="el-button el-button--primary" onclick="uploadImage()">上传分割</button> 
         </section>
       </article>
       <article>
