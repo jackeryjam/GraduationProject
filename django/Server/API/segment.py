@@ -9,6 +9,7 @@ def segment_POST(request):
 
 def segment_GET(request):
     image = request.GET.get('image')
+    segment(image)
     resp = {'code': 200, 'data': 'Get success'}
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
