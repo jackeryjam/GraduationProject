@@ -14,17 +14,137 @@ fieldset, img { border:0; }
 button, input, select, textarea { font-size:100%; }
 table { border-collapse:collapse; border-spacing:0; }
 
+.el-button{
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+    -webkit-appearance: none;
+    text-align: center;
+    box-sizing: border-box;
+    outline: none;
+    margin: 0;
+    transition: .1s;
+    font-weight: 500;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+.el-button--primary {
+    color: #fff;
+    background-color: #409eff;
+    border-color: #409eff;
+}
+.el-button--primary:hover {
+    background: #66b1ff;
+    border-color: #66b1ff;
+    color: #fff;
+}
+
 header h1{
     font-size: 36px;
     margin: 12px;
 }
 main{
     margin: 12px;
+    border-top: 1px solid #bfbfbf;
+    padding-top: 12px;
+}
+.upload section:first-child{
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
 }
 .upload .upload-box{
-    border: 4px dashed #AAA;
-    width: 400px;
-    height: 300px;
+    border: 4px dashed #bfbfbf;
+    min-width: 400px;
+    height: 100%;
     border-radius: 16px;
-    background-image: url('<svg t="1553342415942" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1098" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M960 512c0 14.08-11.52 25.6-25.6 25.6L537.6 537.6l0 396.8c0 14.08-11.52 25.6-25.6 25.6s-25.6-11.52-25.6-25.6L486.4 537.6 89.6 537.6c-14.08 0-25.6-11.52-25.6-25.6 0-14.08 11.52-25.6 25.6-25.6l396.8 0L486.4 89.6c0-14.08 11.52-25.6 25.6-25.6s25.6 11.52 25.6 25.6l0 396.8 396.8 0C948.48 486.4 960 497.92 960 512z" p-id="1099" fill="#bfbfbf"></path></svg>')
+    background: url('data:image/svg+xml;charset=utf8,%3Csvg%20t%3D%221553342415942%22%20class%3D%22icon%22%20style%3D%22%22%20viewBox%3D%220%200%201024%201024%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20p-id%3D%221098%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M960%20512c0%2014.08-11.52%2025.6-25.6%2025.6L537.6%20537.6l0%20396.8c0%2014.08-11.52%2025.6-25.6%2025.6s-25.6-11.52-25.6-25.6L486.4%20537.6%2089.6%20537.6c-14.08%200-25.6-11.52-25.6-25.6%200-14.08%2011.52-25.6%2025.6-25.6l396.8%200L486.4%2089.6c0-14.08%2011.52-25.6%2025.6-25.6s25.6%2011.52%2025.6%2025.6l0%20396.8%20396.8%200C948.48%20486.4%20960%20497.92%20960%20512z%22%20p-id%3D%221099%22%20fill%3D%22%23bfbfbf%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') no-repeat center center;
+    background-size: 34%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
 }
+.upload .upload-box:hover{
+    cursor:pointer;
+}
+.upload section:first-child input[type='file']{
+    position: absolute;
+    opacity: 0;
+}
+.upload button{
+    margin: 4px;
+}
+.upload section:first-child img {
+    height: 100%;
+}
+.upload section:nth-child(2){
+    padding: 8px 0;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.banner { position: relative; overflow: auto; text-align: center;}
+
+.banner li { list-style: none; }
+
+.banner ul li { float: left; }
+
+#b05 { width: 640px;}
+
+#b05 .dots { position: absolute; left: 0; right: 0; bottom: 20px;}
+
+#b05 .dots li 
+
+{ 
+
+	display: inline-block; 
+
+	width: 10px; 
+
+	height: 10px; 
+
+	margin: 0 4px; 
+
+	text-indent: -999em; 
+
+	border: 2px solid #fff; 
+
+	border-radius: 6px; 
+
+	cursor: pointer; 
+
+	opacity: .4; 
+
+	-webkit-transition: background .5s, opacity .5s; 
+
+	-moz-transition: background .5s, opacity .5s; 
+
+	transition: background .5s, opacity .5s;
+
+}
+
+#b05 .dots li.active 
+
+{
+
+	background: #fff;
+
+	opacity: 1;
+
+}
+
+#b05 .arrow { position: absolute; top: 200px;}
+
+#b05 #al { left: 15px;}
+
+#b05 #ar { right: 15px;}

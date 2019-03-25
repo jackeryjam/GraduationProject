@@ -11,17 +11,42 @@
     </header>
     <main>
       <article class="upload">
-        <div class="upload-box"></div>
-        <button></button> 
+        <section>
+          <div class="upload-box" onclick="selectPic()"></div>
+          <input type="file" id="fileSelector" onclick="preventDefault()" onchange="readFile(this.files)"/>
+        </section>
+        <section>
+            <button class="el-button el-button--primary">立即拍照</button> 
+            <button class="el-button el-button--primary">上传分割</button> 
+        </section>
       </article>
-      <article>article2</article>
+      <article>
+        <div class="banner" id="b05">
+          <ul>
+            <li><img src="./lib/unslider/01.jpg" alt="" width="640" height="480" ></li>
+    
+            <li><img src="./lib/unslider/02.jpg" alt="" width="640" height="480" ></li>
+    
+            <li><img src="./lib/unslider/03.jpg" alt="" width="640" height="480" ></li>
+    
+            <li><img src="./lib/unslider/04.jpg" alt="" width="640" height="480" ></li>
+    
+            <li><img src="./lib/unslider/05.jpg" alt="" width="640" height="480" ></li>
+          </ul>
+          <a href="javascript:void(0);" class="unslider-arrow05 prev"><img class="arrow" id="al" src="./lib/unslider/arrowl.png" alt="prev" width="20" height="35"></a>
+          <a href="javascript:void(0);" class="unslider-arrow05 next"><img class="arrow" id="ar" src="./lib/unslider/arrowr.png" alt="next" width="20" height="37"></a>
+        </div>
+        <button id="stop">停止</button>
+        <button id="start">开始</button>
+        <button id="move">转到第二张（可有回调函数）</button>
+      </article>
     </main>
     <footer>footer</footer>
     
 
     <script>
       // You can also require other files to run in this process
-      // require('./renderer.js')
+      require('./renderer.js');
     </script>
   </body>
 </html>
