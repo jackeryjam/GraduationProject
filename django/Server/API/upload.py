@@ -7,6 +7,7 @@ from urllib import quote
 import time
 import hashlib   
 import sys
+import settings
 reload(sys)
 sys.setdefaultencoding('utf8')  
 
@@ -22,7 +23,7 @@ def upload_POST(request):
     if not myFile: 
         return HttpResponse("no files for upload!") 
     fileName = md5name(myFile.name)
-    destination = open(os.path.join("./static/image",fileName),'wb+')
+    destination = open(os.path.join(settings.BASE_DIR,"static/image",fileName),'wb+')
     for chunk in myFile.chunks():
         destination.write(chunk) 
     destination.close() 
