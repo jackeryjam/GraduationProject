@@ -33,6 +33,8 @@ def segment(img):
     caffe.set_device(0)
     caffe.set_mode_gpu()
     im = modifySize(Image.open(img))
+    if (im.mode == "RGBA"):
+        im = im.convert("RGB")
     in_ = np.array(im, dtype=np.float32)
     in_ = in_[:,:,::-1]
     in_ -= np.array((104.00698793,116.66876762,122.67891434))
@@ -54,7 +56,7 @@ def segment(img):
     output = os.path.join("./static/image",imgNames[0] + ".output.png")
     out_im.save(output)
     masked_im = Image.fromarray(vis.vis_seg(im, out, voc_palette))
-    visualization = os.path.join("./static/image",imgNames[0] + ".vis." + imgNames[1])
+    visualization = os.path.join("./static/image",imgNames[0] + ".vis.jpg")
     masked_im.save(visualization)
     time_end=time.time()
     print('totally cost',time_end-time_start)
