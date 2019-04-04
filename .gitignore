@@ -7,3 +7,6 @@ fcn
 *.caffemodel
 dist
 *node_modules*
+*.solverstate
+demo
+nohup.out
