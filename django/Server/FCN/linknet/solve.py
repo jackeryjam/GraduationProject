@@ -13,14 +13,14 @@ try:
 except:
     pass
 
-weights = '../voc-fcn16s/voc-fcn16s.caffemodel'
+weights = 'resnet-18.caffemodel'
 
 # init
 caffe.set_device(int(sys.argv[1]))
 caffe.set_mode_gpu()
 
 solver = caffe.SGDSolver('solver.prototxt')
-#solver.net.copy_from(weights)
+solver.net.copy_from(weights)
 
 # surgeries
 interp_layers = [k for k in solver.net.params.keys() if 'up' in k]

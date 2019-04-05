@@ -8,27 +8,28 @@ def max_pool(bottom, ks=2, stride=2):
 
 def conv_relu(bottom, nout, ks=3, stride=1, pad=1):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
-        num_output=nout, pad=pad,
-        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+        num_output=nout, pad=pad, bias_term=False,
+        weight_filler=dict(type="msra") )
+        #param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)]
     return conv, L.ReLU(conv, in_place=True)
 
 def conv_BN_scale(bottom, nout, ks=3, stride=1, pad=1):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
-        num_output=nout, pad=pad,
-        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+        num_output=nout, pad=pad, bias_term=False,
+        weight_filler=dict(type="msra") )
     return conv, L.BatchNorm(conv, in_place=True), L.Scale(conv, in_place=True, bias_term=True)
 
 def conv_BN_scale_relu(bottom, nout, ks=3, stride=1, pad=1):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
-        num_output=nout, pad=pad,
-        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+        num_output=nout, pad=pad, bias_term=False,
+        weight_filler=dict(type="msra") )
     return conv, L.BatchNorm(conv, in_place=True), L.Scale(conv, in_place=True, bias_term=True), L.ReLU(conv, in_place=True)
 
 def deconv_BN_scale_relu(bottom, nout, ks=3, stride=1, pad=1, bias_term=True):
     deconv = L.Deconvolution(bottom, 
         convolution_param=dict(num_output=nout, kernel_size=ks, stride=stride, pad=pad,
-            bias_term=bias_term),
-        param=[dict(lr_mult=0)])
+            bias_term=bias_term) )
+        # param=[dict(lr_mult=0)])
     return deconv, L.BatchNorm(deconv, in_place=bias_term), L.Scale(deconv, in_place=True, bias_term=bias_term), L.ReLU(deconv, in_place=True)
 
 def max_pool(bottom, ks=2, stride=2):
@@ -40,10 +41,10 @@ class LinkNet:
         self.createDataLayer(data, label)
         self.in_block = self.creatInitBlock()
 
-        self.encoder1 = self.createEncoder("encoder1", self.in_block["top"], 64)
-        self.encoder2 = self.createEncoder("encoder2", self.encoder1["top"], 128, stride=2)
-        self.encoder3 = self.createEncoder("encoder3", self.encoder2["top"], 256, stride=2)
-        self.encoder4 = self.createEncoder("encoder4", self.encoder3["top"], 512, stride=2)
+        self.encoder1 = self.createEncoder("res2", self.in_block["top"], 64)
+        self.encoder2 = self.createEncoder("res3", self.encoder1["top"], 128, stride=2)
+        self.encoder3 = self.createEncoder("res4", self.encoder2["top"], 256, stride=2)
+        self.encoder4 = self.createEncoder("res5", self.encoder3["top"], 512, stride=2)
 
         self.decoder4 = self.createDecoder("decoder4", self.encoder4["top"], 512, 256, 2, pad=0)
         d4_crop = crop(self.decoder4["top"], self.encoder3["top"])
@@ -75,27 +76,33 @@ class LinkNet:
     def creatInitBlock(self):
         n = self.net
         # init block
-        n.in_block_conv, n.in_block_BN, n.in_block_scale, n.in_block_relu = conv_BN_scale_relu(n.data, 64, pad=3, stride=2, ks=7)
-        n.pool1 = max_pool(n.in_block_relu)
+        n.conv1, n.bn_conv1, n.scale_conv1, n.conv1_relu = conv_BN_scale_relu(n.data, 64, pad=3, stride=2, ks=7)
+        n.pool1 = max_pool(n.conv1_relu)
         return {"bottom": n.data, "top": n.pool1}
     
     def createEncoder(self, name, bottom, nout, stride=1, pad=1):
         n = self.net
 
-        n[name+"_conv1"], n[name+"_BN1"], n[name+"_scale1"], n[name+"_relu1"] = conv_BN_scale_relu(bottom, nout, stride=stride)
-        n[name+"_conv2"], n[name+"_BN2"], n[name+"_scale2"] = conv_BN_scale(n[name+"_relu1"], nout)
-        n[name+"_conv_r"], n[name+"_BN_r"], n[name+"_scale_r"] = conv_BN_scale(bottom, nout, 1, stride=stride, pad=0)
-        
-        n[name+"_sum1"] = L.Eltwise(n[name+"_scale_r"], n[name+"_scale2"], operation=P.Eltwise.SUM)
-        n[name+"_sum_relu1"] = L.ReLU(n[name+"_sum1"], in_place=True)
+        prefix = name + "a_branch1"
+        n[prefix], n[prefix.replace("res","bn")], n[prefix.replace("res","scale")] = conv_BN_scale(bottom, nout, 1, stride=stride, pad=0)
 
-        n[name+"_conv3"], n[name+"_BN3"], n[name+"_scale3"], n[name+"_relu3"] = conv_BN_scale_relu(n[name+"_sum_relu1"], nout)
-        n[name+"_conv4"], n[name+"_BN4"], n[name+"_scale4"] = conv_BN_scale(n[name+"_relu3"], nout)
-        n[name+"_sum2"] = L.Eltwise(n[name+"_scale4"], n[name+"_sum_relu1"], operation=P.Eltwise.SUM)
-        n[name+"_sum_relu2"] = L.ReLU(n[name+"_sum2"], in_place=True)
+        prefix_a = name + "a_branch2a"
+        n[prefix_a], n[prefix_a.replace("res","bn")], n[prefix_a.replace("res","scale")], n[prefix_a+"_relu"] = conv_BN_scale_relu(bottom, nout, stride=stride)
+        prefix_b = name + "a_branch2b"
+        n[prefix_b], n[prefix_b.replace("res","bn")], n[prefix_b.replace("res","scale")] = conv_BN_scale(n[prefix_a+"_relu"], nout)
+        
+        n[name+"a"] = L.Eltwise(n[prefix.replace("res","scale")], n[prefix_b.replace("res","scale")], operation=P.Eltwise.SUM)
+        n[name+"a_relu"] = L.ReLU(n[name+"a"], in_place=True)
+
+        prefix2_a = name + "b_branch2a"
+        n[prefix2_a], n[prefix2_a.replace("res","bn")], n[prefix2_a.replace("res","scale")], n[prefix2_a+"_relu"] = conv_BN_scale_relu(n[name+"a_relu"], nout)
+        prefix2_b = name + "b_branch2b"
+        n[prefix2_b], n[prefix2_b.replace("res","bn")], n[prefix2_b.replace("res","scale")] = conv_BN_scale(n[prefix2_a+"_relu"], nout)
+        n[name+"b"] = L.Eltwise(n[name+"a_relu"], n[prefix2_b.replace("res","scale")], operation=P.Eltwise.SUM)
+        n[name+"b_relu"] = L.ReLU(n[name+"b"], in_place=True)
         return {
             "bottom": bottom,
-            "top": n[name+"_sum_relu2"]
+            "top": n[name+"b_relu"]
         }
 
     def createDecoder(self, name, bottom, nin, nout, stride=1, pad=1):
@@ -150,4 +157,5 @@ def make_net():
 
 if __name__ == '__main__':
     make_net()
+
 
