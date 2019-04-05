@@ -5,6 +5,8 @@ django/static
 django/db.sqlite3
 fcn
 *.caffemodel
+dist
+*node_modules*
 *.solverstate
 demo
 nohup.out

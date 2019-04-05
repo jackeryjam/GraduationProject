@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "debug": "electron . --inspect"
+    "pack": "electron-builder -mwl",
+    "pack-mac": "electron-builder -m",
+    "pack-win": "electron-builder -w",
+    "pack-linux": "electron-builder -l"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -19,5 +22,21 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^4.0.7"
-  }
+  },
+
+"build": {  
+  "appId": "com.leon.HelloWorld02",
+  "copyright":"LEON",
+  "productName":"HelloWorld02",
+  "dmg":{  
+    "window":{  
+      "x":100,
+      "y":100,  
+      "width":500,  
+      "height":300  
+    }  
+  },  
+  "win": {  
+  }  
+}
 }
