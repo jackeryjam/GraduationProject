@@ -69,8 +69,9 @@ class LinkNet:
 
         n.upscore = L.Deconvolution(n.score_fr,
             convolution_param=dict(num_output=21, kernel_size=64, stride=32,
-                bias_term=False, weight_filler=dict(type="bilinear") ), param=[dict(lr_mult=0)])
-
+                bias_term=False, weight_filler=dict(type="bilinear") ),
+                param=[dict(lr_mult=0)])
+        n.score = crop(n.upscore, data)
         n.loss = L.SoftmaxWithLoss(n.upscore, n.label,
                 loss_param=dict(normalize=False, ignore_label=255))
     
