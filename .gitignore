@@ -3,7 +3,6 @@ electron/node_modules
 *.DS_Store
 django/static
 django/db.sqlite3
-fcn
 *.caffemodel
 dist
 *node_modules*
