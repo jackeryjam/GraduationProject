@@ -9,50 +9,46 @@ layer {
   }
 }
 layer {
-  name: "in_block_conv"
+  name: "conv1"
   type: "Convolution"
   bottom: "data"
-  top: "in_block_conv"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  top: "conv1"
   convolution_param {
     num_output: 64
+    bias_term: false
     pad: 3
     kernel_size: 7
     stride: 2
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "in_block_BN"
+  name: "bn_conv1"
   type: "BatchNorm"
-  bottom: "in_block_conv"
-  top: "in_block_conv"
+  bottom: "conv1"
+  top: "conv1"
 }
 layer {
-  name: "in_block_scale"
+  name: "scale_conv1"
   type: "Scale"
-  bottom: "in_block_conv"
-  top: "in_block_conv"
+  bottom: "conv1"
+  top: "conv1"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "in_block_relu"
+  name: "conv1_relu"
   type: "ReLU"
-  bottom: "in_block_conv"
-  top: "in_block_conv"
+  bottom: "conv1"
+  top: "conv1"
 }
 layer {
   name: "pool1"
   type: "Pooling"
-  bottom: "in_block_conv"
+  bottom: "conv1"
   top: "pool1"
   pooling_param {
     pool: MAX
@@ -61,899 +57,815 @@ layer {
   }
 }
 layer {
-  name: "encoder1_conv1"
+  name: "res2a_branch1"
   type: "Convolution"
   bottom: "pool1"
-  top: "encoder1_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  top: "res2a_branch1"
   convolution_param {
     num_output: 64
-    pad: 1
-    kernel_size: 3
+    bias_term: false
+    pad: 0
+    kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder1_BN1"
+  name: "bn2a_branch1"
   type: "BatchNorm"
-  bottom: "encoder1_conv1"
-  top: "encoder1_conv1"
+  bottom: "res2a_branch1"
+  top: "res2a_branch1"
 }
 layer {
-  name: "encoder1_scale1"
+  name: "scale2a_branch1"
   type: "Scale"
-  bottom: "encoder1_conv1"
-  top: "encoder1_conv1"
+  bottom: "res2a_branch1"
+  top: "res2a_branch1"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder1_relu1"
-  type: "ReLU"
-  bottom: "encoder1_conv1"
-  top: "encoder1_conv1"
-}
-layer {
-  name: "encoder1_conv2"
-  type: "Convolution"
-  bottom: "encoder1_conv1"
-  top: "encoder1_conv2"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 64
-    pad: 1
-    kernel_size: 3
-    stride: 1
-  }
-}
-layer {
-  name: "encoder1_BN2"
-  type: "BatchNorm"
-  bottom: "encoder1_conv2"
-  top: "encoder1_conv2"
-}
-layer {
-  name: "encoder1_scale2"
-  type: "Scale"
-  bottom: "encoder1_conv2"
-  top: "encoder1_conv2"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "encoder1_conv_r"
+  name: "res2a_branch2a"
   type: "Convolution"
   bottom: "pool1"
-  top: "encoder1_conv_r"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  top: "res2a_branch2a"
   convolution_param {
     num_output: 64
-    pad: 0
-    kernel_size: 1
+    bias_term: false
+    pad: 1
+    kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder1_BN_r"
+  name: "bn2a_branch2a"
   type: "BatchNorm"
-  bottom: "encoder1_conv_r"
-  top: "encoder1_conv_r"
+  bottom: "res2a_branch2a"
+  top: "res2a_branch2a"
 }
 layer {
-  name: "encoder1_scale_r"
+  name: "scale2a_branch2a"
   type: "Scale"
-  bottom: "encoder1_conv_r"
-  top: "encoder1_conv_r"
+  bottom: "res2a_branch2a"
+  top: "res2a_branch2a"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder1_sum1"
-  type: "Eltwise"
-  bottom: "encoder1_conv_r"
-  bottom: "encoder1_conv2"
-  top: "encoder1_sum1"
-  eltwise_param {
-    operation: SUM
-  }
-}
-layer {
-  name: "encoder1_sum_relu1"
+  name: "res2a_branch2a_relu"
   type: "ReLU"
-  bottom: "encoder1_sum1"
-  top: "encoder1_sum1"
+  bottom: "res2a_branch2a"
+  top: "res2a_branch2a"
 }
 layer {
-  name: "encoder1_conv3"
+  name: "res2a_branch2b"
   type: "Convolution"
-  bottom: "encoder1_sum1"
-  top: "encoder1_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res2a_branch2a"
+  top: "res2a_branch2b"
   convolution_param {
     num_output: 64
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder1_BN3"
+  name: "bn2a_branch2b"
   type: "BatchNorm"
-  bottom: "encoder1_conv3"
-  top: "encoder1_conv3"
+  bottom: "res2a_branch2b"
+  top: "res2a_branch2b"
 }
 layer {
-  name: "encoder1_scale3"
+  name: "scale2a_branch2b"
   type: "Scale"
-  bottom: "encoder1_conv3"
-  top: "encoder1_conv3"
+  bottom: "res2a_branch2b"
+  top: "res2a_branch2b"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder1_relu3"
-  type: "ReLU"
-  bottom: "encoder1_conv3"
-  top: "encoder1_conv3"
+  name: "res2a"
+  type: "Eltwise"
+  bottom: "res2a_branch1"
+  bottom: "res2a_branch2b"
+  top: "res2a"
+  eltwise_param {
+    operation: SUM
+  }
 }
 layer {
-  name: "encoder1_conv4"
+  name: "res2a_relu"
+  type: "ReLU"
+  bottom: "res2a"
+  top: "res2a"
+}
+layer {
+  name: "res2b_branch2a"
   type: "Convolution"
-  bottom: "encoder1_conv3"
-  top: "encoder1_conv4"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res2a"
+  top: "res2b_branch2a"
   convolution_param {
     num_output: 64
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder1_BN4"
+  name: "bn2b_branch2a"
   type: "BatchNorm"
-  bottom: "encoder1_conv4"
-  top: "encoder1_conv4"
+  bottom: "res2b_branch2a"
+  top: "res2b_branch2a"
 }
 layer {
-  name: "encoder1_scale4"
+  name: "scale2b_branch2a"
   type: "Scale"
-  bottom: "encoder1_conv4"
-  top: "encoder1_conv4"
+  bottom: "res2b_branch2a"
+  top: "res2b_branch2a"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder1_sum2"
+  name: "res2b_branch2a_relu"
+  type: "ReLU"
+  bottom: "res2b_branch2a"
+  top: "res2b_branch2a"
+}
+layer {
+  name: "res2b_branch2b"
+  type: "Convolution"
+  bottom: "res2b_branch2a"
+  top: "res2b_branch2b"
+  convolution_param {
+    num_output: 64
+    bias_term: false
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+  }
+}
+layer {
+  name: "bn2b_branch2b"
+  type: "BatchNorm"
+  bottom: "res2b_branch2b"
+  top: "res2b_branch2b"
+}
+layer {
+  name: "scale2b_branch2b"
+  type: "Scale"
+  bottom: "res2b_branch2b"
+  top: "res2b_branch2b"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  name: "res2b"
   type: "Eltwise"
-  bottom: "encoder1_conv4"
-  bottom: "encoder1_sum1"
-  top: "encoder1_sum2"
+  bottom: "res2a"
+  bottom: "res2b_branch2b"
+  top: "res2b"
   eltwise_param {
     operation: SUM
   }
 }
 layer {
-  name: "encoder1_sum_relu2"
+  name: "res2b_relu"
   type: "ReLU"
-  bottom: "encoder1_sum2"
-  top: "encoder1_sum2"
+  bottom: "res2b"
+  top: "res2b"
 }
 layer {
-  name: "encoder2_conv1"
+  name: "res3a_branch1"
   type: "Convolution"
-  bottom: "encoder1_sum2"
-  top: "encoder2_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res2b"
+  top: "res3a_branch1"
   convolution_param {
     num_output: 128
-    pad: 1
-    kernel_size: 3
-    stride: 2
-  }
-}
-layer {
-  name: "encoder2_BN1"
-  type: "BatchNorm"
-  bottom: "encoder2_conv1"
-  top: "encoder2_conv1"
-}
-layer {
-  name: "encoder2_scale1"
-  type: "Scale"
-  bottom: "encoder2_conv1"
-  top: "encoder2_conv1"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "encoder2_relu1"
-  type: "ReLU"
-  bottom: "encoder2_conv1"
-  top: "encoder2_conv1"
-}
-layer {
-  name: "encoder2_conv2"
-  type: "Convolution"
-  bottom: "encoder2_conv1"
-  top: "encoder2_conv2"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 128
-    pad: 1
-    kernel_size: 3
-    stride: 1
-  }
-}
-layer {
-  name: "encoder2_BN2"
-  type: "BatchNorm"
-  bottom: "encoder2_conv2"
-  top: "encoder2_conv2"
-}
-layer {
-  name: "encoder2_scale2"
-  type: "Scale"
-  bottom: "encoder2_conv2"
-  top: "encoder2_conv2"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "encoder2_conv_r"
-  type: "Convolution"
-  bottom: "encoder1_sum2"
-  top: "encoder2_conv_r"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 128
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 2
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder2_BN_r"
+  name: "bn3a_branch1"
   type: "BatchNorm"
-  bottom: "encoder2_conv_r"
-  top: "encoder2_conv_r"
+  bottom: "res3a_branch1"
+  top: "res3a_branch1"
 }
 layer {
-  name: "encoder2_scale_r"
+  name: "scale3a_branch1"
   type: "Scale"
-  bottom: "encoder2_conv_r"
-  top: "encoder2_conv_r"
+  bottom: "res3a_branch1"
+  top: "res3a_branch1"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder2_sum1"
-  type: "Eltwise"
-  bottom: "encoder2_conv_r"
-  bottom: "encoder2_conv2"
-  top: "encoder2_sum1"
-  eltwise_param {
-    operation: SUM
-  }
-}
-layer {
-  name: "encoder2_sum_relu1"
-  type: "ReLU"
-  bottom: "encoder2_sum1"
-  top: "encoder2_sum1"
-}
-layer {
-  name: "encoder2_conv3"
+  name: "res3a_branch2a"
   type: "Convolution"
-  bottom: "encoder2_sum1"
-  top: "encoder2_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res2b"
+  top: "res3a_branch2a"
   convolution_param {
     num_output: 128
-    pad: 1
-    kernel_size: 3
-    stride: 1
-  }
-}
-layer {
-  name: "encoder2_BN3"
-  type: "BatchNorm"
-  bottom: "encoder2_conv3"
-  top: "encoder2_conv3"
-}
-layer {
-  name: "encoder2_scale3"
-  type: "Scale"
-  bottom: "encoder2_conv3"
-  top: "encoder2_conv3"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "encoder2_relu3"
-  type: "ReLU"
-  bottom: "encoder2_conv3"
-  top: "encoder2_conv3"
-}
-layer {
-  name: "encoder2_conv4"
-  type: "Convolution"
-  bottom: "encoder2_conv3"
-  top: "encoder2_conv4"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 128
-    pad: 1
-    kernel_size: 3
-    stride: 1
-  }
-}
-layer {
-  name: "encoder2_BN4"
-  type: "BatchNorm"
-  bottom: "encoder2_conv4"
-  top: "encoder2_conv4"
-}
-layer {
-  name: "encoder2_scale4"
-  type: "Scale"
-  bottom: "encoder2_conv4"
-  top: "encoder2_conv4"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "encoder2_sum2"
-  type: "Eltwise"
-  bottom: "encoder2_conv4"
-  bottom: "encoder2_sum1"
-  top: "encoder2_sum2"
-  eltwise_param {
-    operation: SUM
-  }
-}
-layer {
-  name: "encoder2_sum_relu2"
-  type: "ReLU"
-  bottom: "encoder2_sum2"
-  top: "encoder2_sum2"
-}
-layer {
-  name: "encoder3_conv1"
-  type: "Convolution"
-  bottom: "encoder2_sum2"
-  top: "encoder3_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 256
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 2
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder3_BN1"
+  name: "bn3a_branch2a"
   type: "BatchNorm"
-  bottom: "encoder3_conv1"
-  top: "encoder3_conv1"
+  bottom: "res3a_branch2a"
+  top: "res3a_branch2a"
 }
 layer {
-  name: "encoder3_scale1"
+  name: "scale3a_branch2a"
   type: "Scale"
-  bottom: "encoder3_conv1"
-  top: "encoder3_conv1"
+  bottom: "res3a_branch2a"
+  top: "res3a_branch2a"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder3_relu1"
+  name: "res3a_branch2a_relu"
   type: "ReLU"
-  bottom: "encoder3_conv1"
-  top: "encoder3_conv1"
+  bottom: "res3a_branch2a"
+  top: "res3a_branch2a"
 }
 layer {
-  name: "encoder3_conv2"
+  name: "res3a_branch2b"
   type: "Convolution"
-  bottom: "encoder3_conv1"
-  top: "encoder3_conv2"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res3a_branch2a"
+  top: "res3a_branch2b"
   convolution_param {
-    num_output: 256
+    num_output: 128
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder3_BN2"
+  name: "bn3a_branch2b"
   type: "BatchNorm"
-  bottom: "encoder3_conv2"
-  top: "encoder3_conv2"
+  bottom: "res3a_branch2b"
+  top: "res3a_branch2b"
 }
 layer {
-  name: "encoder3_scale2"
+  name: "scale3a_branch2b"
   type: "Scale"
-  bottom: "encoder3_conv2"
-  top: "encoder3_conv2"
+  bottom: "res3a_branch2b"
+  top: "res3a_branch2b"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder3_conv_r"
+  name: "res3a"
+  type: "Eltwise"
+  bottom: "res3a_branch1"
+  bottom: "res3a_branch2b"
+  top: "res3a"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "res3a_relu"
+  type: "ReLU"
+  bottom: "res3a"
+  top: "res3a"
+}
+layer {
+  name: "res3b_branch2a"
   type: "Convolution"
-  bottom: "encoder2_sum2"
-  top: "encoder3_conv_r"
-  param {
-    lr_mult: 1
-    decay_mult: 1
+  bottom: "res3a"
+  top: "res3b_branch2a"
+  convolution_param {
+    num_output: 128
+    bias_term: false
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
-  param {
-    lr_mult: 2
-    decay_mult: 0
+}
+layer {
+  name: "bn3b_branch2a"
+  type: "BatchNorm"
+  bottom: "res3b_branch2a"
+  top: "res3b_branch2a"
+}
+layer {
+  name: "scale3b_branch2a"
+  type: "Scale"
+  bottom: "res3b_branch2a"
+  top: "res3b_branch2a"
+  scale_param {
+    bias_term: true
   }
+}
+layer {
+  name: "res3b_branch2a_relu"
+  type: "ReLU"
+  bottom: "res3b_branch2a"
+  top: "res3b_branch2a"
+}
+layer {
+  name: "res3b_branch2b"
+  type: "Convolution"
+  bottom: "res3b_branch2a"
+  top: "res3b_branch2b"
+  convolution_param {
+    num_output: 128
+    bias_term: false
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+  }
+}
+layer {
+  name: "bn3b_branch2b"
+  type: "BatchNorm"
+  bottom: "res3b_branch2b"
+  top: "res3b_branch2b"
+}
+layer {
+  name: "scale3b_branch2b"
+  type: "Scale"
+  bottom: "res3b_branch2b"
+  top: "res3b_branch2b"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  name: "res3b"
+  type: "Eltwise"
+  bottom: "res3a"
+  bottom: "res3b_branch2b"
+  top: "res3b"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "res3b_relu"
+  type: "ReLU"
+  bottom: "res3b"
+  top: "res3b"
+}
+layer {
+  name: "res4a_branch1"
+  type: "Convolution"
+  bottom: "res3b"
+  top: "res4a_branch1"
   convolution_param {
     num_output: 256
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 2
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder3_BN_r"
+  name: "bn4a_branch1"
   type: "BatchNorm"
-  bottom: "encoder3_conv_r"
-  top: "encoder3_conv_r"
+  bottom: "res4a_branch1"
+  top: "res4a_branch1"
 }
 layer {
-  name: "encoder3_scale_r"
+  name: "scale4a_branch1"
   type: "Scale"
-  bottom: "encoder3_conv_r"
-  top: "encoder3_conv_r"
+  bottom: "res4a_branch1"
+  top: "res4a_branch1"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder3_sum1"
-  type: "Eltwise"
-  bottom: "encoder3_conv_r"
-  bottom: "encoder3_conv2"
-  top: "encoder3_sum1"
-  eltwise_param {
-    operation: SUM
-  }
-}
-layer {
-  name: "encoder3_sum_relu1"
-  type: "ReLU"
-  bottom: "encoder3_sum1"
-  top: "encoder3_sum1"
-}
-layer {
-  name: "encoder3_conv3"
+  name: "res4a_branch2a"
   type: "Convolution"
-  bottom: "encoder3_sum1"
-  top: "encoder3_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res3b"
+  top: "res4a_branch2a"
   convolution_param {
     num_output: 256
-    pad: 1
-    kernel_size: 3
-    stride: 1
-  }
-}
-layer {
-  name: "encoder3_BN3"
-  type: "BatchNorm"
-  bottom: "encoder3_conv3"
-  top: "encoder3_conv3"
-}
-layer {
-  name: "encoder3_scale3"
-  type: "Scale"
-  bottom: "encoder3_conv3"
-  top: "encoder3_conv3"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "encoder3_relu3"
-  type: "ReLU"
-  bottom: "encoder3_conv3"
-  top: "encoder3_conv3"
-}
-layer {
-  name: "encoder3_conv4"
-  type: "Convolution"
-  bottom: "encoder3_conv3"
-  top: "encoder3_conv4"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 256
-    pad: 1
-    kernel_size: 3
-    stride: 1
-  }
-}
-layer {
-  name: "encoder3_BN4"
-  type: "BatchNorm"
-  bottom: "encoder3_conv4"
-  top: "encoder3_conv4"
-}
-layer {
-  name: "encoder3_scale4"
-  type: "Scale"
-  bottom: "encoder3_conv4"
-  top: "encoder3_conv4"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "encoder3_sum2"
-  type: "Eltwise"
-  bottom: "encoder3_conv4"
-  bottom: "encoder3_sum1"
-  top: "encoder3_sum2"
-  eltwise_param {
-    operation: SUM
-  }
-}
-layer {
-  name: "encoder3_sum_relu2"
-  type: "ReLU"
-  bottom: "encoder3_sum2"
-  top: "encoder3_sum2"
-}
-layer {
-  name: "encoder4_conv1"
-  type: "Convolution"
-  bottom: "encoder3_sum2"
-  top: "encoder4_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 512
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 2
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder4_BN1"
+  name: "bn4a_branch2a"
   type: "BatchNorm"
-  bottom: "encoder4_conv1"
-  top: "encoder4_conv1"
+  bottom: "res4a_branch2a"
+  top: "res4a_branch2a"
 }
 layer {
-  name: "encoder4_scale1"
+  name: "scale4a_branch2a"
   type: "Scale"
-  bottom: "encoder4_conv1"
-  top: "encoder4_conv1"
+  bottom: "res4a_branch2a"
+  top: "res4a_branch2a"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder4_relu1"
+  name: "res4a_branch2a_relu"
   type: "ReLU"
-  bottom: "encoder4_conv1"
-  top: "encoder4_conv1"
+  bottom: "res4a_branch2a"
+  top: "res4a_branch2a"
 }
 layer {
-  name: "encoder4_conv2"
+  name: "res4a_branch2b"
   type: "Convolution"
-  bottom: "encoder4_conv1"
-  top: "encoder4_conv2"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res4a_branch2a"
+  top: "res4a_branch2b"
   convolution_param {
-    num_output: 512
+    num_output: 256
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder4_BN2"
+  name: "bn4a_branch2b"
   type: "BatchNorm"
-  bottom: "encoder4_conv2"
-  top: "encoder4_conv2"
+  bottom: "res4a_branch2b"
+  top: "res4a_branch2b"
 }
 layer {
-  name: "encoder4_scale2"
+  name: "scale4a_branch2b"
   type: "Scale"
-  bottom: "encoder4_conv2"
-  top: "encoder4_conv2"
+  bottom: "res4a_branch2b"
+  top: "res4a_branch2b"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder4_conv_r"
+  name: "res4a"
+  type: "Eltwise"
+  bottom: "res4a_branch1"
+  bottom: "res4a_branch2b"
+  top: "res4a"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "res4a_relu"
+  type: "ReLU"
+  bottom: "res4a"
+  top: "res4a"
+}
+layer {
+  name: "res4b_branch2a"
   type: "Convolution"
-  bottom: "encoder3_sum2"
-  top: "encoder4_conv_r"
-  param {
-    lr_mult: 1
-    decay_mult: 1
+  bottom: "res4a"
+  top: "res4b_branch2a"
+  convolution_param {
+    num_output: 256
+    bias_term: false
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
-  param {
-    lr_mult: 2
-    decay_mult: 0
+}
+layer {
+  name: "bn4b_branch2a"
+  type: "BatchNorm"
+  bottom: "res4b_branch2a"
+  top: "res4b_branch2a"
+}
+layer {
+  name: "scale4b_branch2a"
+  type: "Scale"
+  bottom: "res4b_branch2a"
+  top: "res4b_branch2a"
+  scale_param {
+    bias_term: true
   }
+}
+layer {
+  name: "res4b_branch2a_relu"
+  type: "ReLU"
+  bottom: "res4b_branch2a"
+  top: "res4b_branch2a"
+}
+layer {
+  name: "res4b_branch2b"
+  type: "Convolution"
+  bottom: "res4b_branch2a"
+  top: "res4b_branch2b"
+  convolution_param {
+    num_output: 256
+    bias_term: false
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+  }
+}
+layer {
+  name: "bn4b_branch2b"
+  type: "BatchNorm"
+  bottom: "res4b_branch2b"
+  top: "res4b_branch2b"
+}
+layer {
+  name: "scale4b_branch2b"
+  type: "Scale"
+  bottom: "res4b_branch2b"
+  top: "res4b_branch2b"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  name: "res4b"
+  type: "Eltwise"
+  bottom: "res4a"
+  bottom: "res4b_branch2b"
+  top: "res4b"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "res4b_relu"
+  type: "ReLU"
+  bottom: "res4b"
+  top: "res4b"
+}
+layer {
+  name: "res5a_branch1"
+  type: "Convolution"
+  bottom: "res4b"
+  top: "res5a_branch1"
   convolution_param {
     num_output: 512
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 2
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder4_BN_r"
+  name: "bn5a_branch1"
   type: "BatchNorm"
-  bottom: "encoder4_conv_r"
-  top: "encoder4_conv_r"
+  bottom: "res5a_branch1"
+  top: "res5a_branch1"
 }
 layer {
-  name: "encoder4_scale_r"
+  name: "scale5a_branch1"
   type: "Scale"
-  bottom: "encoder4_conv_r"
-  top: "encoder4_conv_r"
+  bottom: "res5a_branch1"
+  top: "res5a_branch1"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder4_sum1"
+  name: "res5a_branch2a"
+  type: "Convolution"
+  bottom: "res4b"
+  top: "res5a_branch2a"
+  convolution_param {
+    num_output: 512
+    bias_term: false
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "msra"
+    }
+  }
+}
+layer {
+  name: "bn5a_branch2a"
+  type: "BatchNorm"
+  bottom: "res5a_branch2a"
+  top: "res5a_branch2a"
+}
+layer {
+  name: "scale5a_branch2a"
+  type: "Scale"
+  bottom: "res5a_branch2a"
+  top: "res5a_branch2a"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  name: "res5a_branch2a_relu"
+  type: "ReLU"
+  bottom: "res5a_branch2a"
+  top: "res5a_branch2a"
+}
+layer {
+  name: "res5a_branch2b"
+  type: "Convolution"
+  bottom: "res5a_branch2a"
+  top: "res5a_branch2b"
+  convolution_param {
+    num_output: 512
+    bias_term: false
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+  }
+}
+layer {
+  name: "bn5a_branch2b"
+  type: "BatchNorm"
+  bottom: "res5a_branch2b"
+  top: "res5a_branch2b"
+}
+layer {
+  name: "scale5a_branch2b"
+  type: "Scale"
+  bottom: "res5a_branch2b"
+  top: "res5a_branch2b"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  name: "res5a"
   type: "Eltwise"
-  bottom: "encoder4_conv_r"
-  bottom: "encoder4_conv2"
-  top: "encoder4_sum1"
+  bottom: "res5a_branch1"
+  bottom: "res5a_branch2b"
+  top: "res5a"
   eltwise_param {
     operation: SUM
   }
 }
 layer {
-  name: "encoder4_sum_relu1"
+  name: "res5a_relu"
   type: "ReLU"
-  bottom: "encoder4_sum1"
-  top: "encoder4_sum1"
+  bottom: "res5a"
+  top: "res5a"
 }
 layer {
-  name: "encoder4_conv3"
+  name: "res5b_branch2a"
   type: "Convolution"
-  bottom: "encoder4_sum1"
-  top: "encoder4_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res5a"
+  top: "res5b_branch2a"
   convolution_param {
     num_output: 512
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder4_BN3"
+  name: "bn5b_branch2a"
   type: "BatchNorm"
-  bottom: "encoder4_conv3"
-  top: "encoder4_conv3"
+  bottom: "res5b_branch2a"
+  top: "res5b_branch2a"
 }
 layer {
-  name: "encoder4_scale3"
+  name: "scale5b_branch2a"
   type: "Scale"
-  bottom: "encoder4_conv3"
-  top: "encoder4_conv3"
+  bottom: "res5b_branch2a"
+  top: "res5b_branch2a"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder4_relu3"
+  name: "res5b_branch2a_relu"
   type: "ReLU"
-  bottom: "encoder4_conv3"
-  top: "encoder4_conv3"
+  bottom: "res5b_branch2a"
+  top: "res5b_branch2a"
 }
 layer {
-  name: "encoder4_conv4"
+  name: "res5b_branch2b"
   type: "Convolution"
-  bottom: "encoder4_conv3"
-  top: "encoder4_conv4"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  bottom: "res5b_branch2a"
+  top: "res5b_branch2b"
   convolution_param {
     num_output: 512
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
-  name: "encoder4_BN4"
+  name: "bn5b_branch2b"
   type: "BatchNorm"
-  bottom: "encoder4_conv4"
-  top: "encoder4_conv4"
+  bottom: "res5b_branch2b"
+  top: "res5b_branch2b"
 }
 layer {
-  name: "encoder4_scale4"
+  name: "scale5b_branch2b"
   type: "Scale"
-  bottom: "encoder4_conv4"
-  top: "encoder4_conv4"
+  bottom: "res5b_branch2b"
+  top: "res5b_branch2b"
   scale_param {
     bias_term: true
   }
 }
 layer {
-  name: "encoder4_sum2"
+  name: "res5b"
   type: "Eltwise"
-  bottom: "encoder4_conv4"
-  bottom: "encoder4_sum1"
-  top: "encoder4_sum2"
+  bottom: "res5a"
+  bottom: "res5b_branch2b"
+  top: "res5b"
   eltwise_param {
     operation: SUM
   }
 }
 layer {
-  name: "encoder4_sum_relu2"
+  name: "res5b_relu"
   type: "ReLU"
-  bottom: "encoder4_sum2"
-  top: "encoder4_sum2"
+  bottom: "res5b"
+  top: "res5b"
 }
 layer {
   name: "decoder4_conv1"
   type: "Convolution"
-  bottom: "encoder4_sum2"
+  bottom: "res5b"
   top: "decoder4_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 128
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -982,9 +894,6 @@ layer {
   type: "Deconvolution"
   bottom: "decoder4_conv1"
   top: "decoder4_deconv"
-  param {
-    lr_mult: 0
-  }
   convolution_param {
     num_output: 128
     bias_term: true
@@ -1019,19 +928,15 @@ layer {
   type: "Convolution"
   bottom: "decoder4_deconv"
   top: "decoder4_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 256
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1059,7 +964,7 @@ layer {
   name: "Crop1"
   type: "Crop"
   bottom: "decoder4_conv3"
-  bottom: "encoder3_sum2"
+  bottom: "res4b"
   top: "Crop1"
   crop_param {
     axis: 2
@@ -1069,7 +974,7 @@ layer {
 layer {
   name: "Eltwise1"
   type: "Eltwise"
-  bottom: "encoder3_sum2"
+  bottom: "res4b"
   bottom: "Crop1"
   top: "Eltwise1"
   eltwise_param {
@@ -1081,19 +986,15 @@ layer {
   type: "Convolution"
   bottom: "Eltwise1"
   top: "decoder3_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 64
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1122,9 +1023,6 @@ layer {
   type: "Deconvolution"
   bottom: "decoder3_conv1"
   top: "decoder3_deconv"
-  param {
-    lr_mult: 0
-  }
   convolution_param {
     num_output: 64
     bias_term: true
@@ -1159,19 +1057,15 @@ layer {
   type: "Convolution"
   bottom: "decoder3_deconv"
   top: "decoder3_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 128
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1199,7 +1093,7 @@ layer {
   name: "Crop2"
   type: "Crop"
   bottom: "decoder3_conv3"
-  bottom: "encoder2_sum2"
+  bottom: "res3b"
   top: "Crop2"
   crop_param {
     axis: 2
@@ -1209,7 +1103,7 @@ layer {
 layer {
   name: "Eltwise2"
   type: "Eltwise"
-  bottom: "encoder2_sum2"
+  bottom: "res3b"
   bottom: "Crop2"
   top: "Eltwise2"
   eltwise_param {
@@ -1221,19 +1115,15 @@ layer {
   type: "Convolution"
   bottom: "Eltwise2"
   top: "decoder2_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 32
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1262,9 +1152,6 @@ layer {
   type: "Deconvolution"
   bottom: "decoder2_conv1"
   top: "decoder2_deconv"
-  param {
-    lr_mult: 0
-  }
   convolution_param {
     num_output: 32
     bias_term: true
@@ -1299,19 +1186,15 @@ layer {
   type: "Convolution"
   bottom: "decoder2_deconv"
   top: "decoder2_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 64
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1339,7 +1222,7 @@ layer {
   name: "Crop3"
   type: "Crop"
   bottom: "decoder2_conv3"
-  bottom: "encoder1_sum2"
+  bottom: "res2b"
   top: "Crop3"
   crop_param {
     axis: 2
@@ -1349,7 +1232,7 @@ layer {
 layer {
   name: "Eltwise3"
   type: "Eltwise"
-  bottom: "encoder1_sum2"
+  bottom: "res2b"
   bottom: "Crop3"
   top: "Eltwise3"
   eltwise_param {
@@ -1361,19 +1244,15 @@ layer {
   type: "Convolution"
   bottom: "Eltwise3"
   top: "decoder1_conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 16
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1402,9 +1281,6 @@ layer {
   type: "Deconvolution"
   bottom: "decoder1_conv1"
   top: "decoder1_deconv"
-  param {
-    lr_mult: 0
-  }
   convolution_param {
     num_output: 16
     bias_term: true
@@ -1439,19 +1315,15 @@ layer {
   type: "Convolution"
   bottom: "decoder1_deconv"
   top: "decoder1_conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 64
+    bias_term: false
     pad: 0
     kernel_size: 1
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1491,9 +1363,6 @@ layer {
   type: "Deconvolution"
   bottom: "Crop4"
   top: "end_block_deconv1"
-  param {
-    lr_mult: 0
-  }
   convolution_param {
     num_output: 32
     bias_term: true
@@ -1528,19 +1397,15 @@ layer {
   type: "Convolution"
   bottom: "end_block_deconv1"
   top: "end_block_conv2"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
   convolution_param {
     num_output: 32
+    bias_term: false
     pad: 1
     kernel_size: 3
     stride: 1
+    weight_filler {
+      type: "msra"
+    }
   }
 }
 layer {
@@ -1569,9 +1434,6 @@ layer {
   type: "Deconvolution"
   bottom: "end_block_conv2"
   top: "end_block_deconv3"
-  param {
-    lr_mult: 0
-  }
   convolution_param {
     num_output: 21
     bias_term: true
