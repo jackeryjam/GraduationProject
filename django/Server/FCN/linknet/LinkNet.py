@@ -28,7 +28,7 @@ def conv_BN_scale_relu(bottom, nout, ks=3, stride=1, pad=1):
 def deconv_BN_scale_relu(bottom, nout, ks=3, stride=1, pad=1, bias_term=True):
     deconv = L.Deconvolution(bottom, 
         convolution_param=dict(num_output=nout, kernel_size=ks, stride=stride, pad=pad,
-            bias_term=bias_term) )
+            bias_term=bias_term, weight_filler=dict(type="bilinear") ) )
         # param=[dict(lr_mult=0)])
     return deconv, L.BatchNorm(deconv, in_place=bias_term), L.Scale(deconv, in_place=True, bias_term=bias_term), L.ReLU(deconv, in_place=True)
 
