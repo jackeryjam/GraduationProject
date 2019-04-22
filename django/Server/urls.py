@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from API.segment import segment
-from API.image import image
+from API.compare import compare
 from API.upload import upload
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^API/segment', segment),
-    url(r'^API/image', image),
+    url(r'^API/compare', compare),
     url(r'^API/upload', upload),
 ]
