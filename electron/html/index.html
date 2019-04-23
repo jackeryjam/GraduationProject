@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Image Segmentation System</title>
+    <script src="../lib/vue.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Image Segmentation System</h1>
+        <a class="compare" href="./compare.html"></a>
+    </header>
+    <article class="upload">
+        <section>
+            <div class="upload-box" onclick="selectPic()">
+                <video id="video" autoplay="autoplay" style="display: none;"></video>
+            </div>
+            <form id="uploadImage" enctype='multipart/form-data' style="display: none;">
+                <input type="file" id="fileSelector" name="file" onclick="preventDefault()" accept="image/*"
+                    onchange="readFile(this.files)" />
+            </form>
+        </section>
+        <section>
+            <button class="el-button el-button--primary" onclick="takePhoto(this)">立即拍照</button>
+            <button class="el-button el-button--primary" onclick="uploadImage()">上传分割</button>
+        </section>
+    </article>
+    <article id="carousel">
+        <el-carousel indicator-position="outside">
+            <el-carousel-item v-for="item in results" :key="item">
+                <!-- <h3>{{ item }}</h3> -->
+                <img :src="item" height="300" />
+            </el-carousel-item>
+        </el-carousel>
+    </article>
+</body>
+
+<!-- 引入样式 -->
+<link rel="stylesheet" href="../lib/element/index.css">
+<!-- 引入组件库 -->
+<script src="../lib/element/index.js"></script>
+
+<script>
+    carouselVm = new Vue({
+        el: '#carousel',
+        data() {
+            return {
+                visible: false,
+                results: []
+            }
+        }
+    })
+    require('../js/index.js')
+</script>
+<style>
+    main {
+        margin: 12px;
+        border-top: 1px solid #bfbfbf;
+        padding-top: 12px;
+    }
+
+    .upload {
+        padding: 16px;
+    }
+
+    .upload section:first-child {
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .upload .upload-box {
+        border: 4px dashed #bfbfbf;
+        min-width: 400px;
+        height: 100%;
+        border-radius: 16px;
+        background: url('data:image/svg+xml;charset=utf8,%3Csvg%20t%3D%221553342415942%22%20class%3D%22icon%22%20style%3D%22%22%20viewBox%3D%220%200%201024%201024%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20p-id%3D%221098%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M960%20512c0%2014.08-11.52%2025.6-25.6%2025.6L537.6%20537.6l0%20396.8c0%2014.08-11.52%2025.6-25.6%2025.6s-25.6-11.52-25.6-25.6L486.4%20537.6%2089.6%20537.6c-14.08%200-25.6-11.52-25.6-25.6%200-14.08%2011.52-25.6%2025.6-25.6l396.8%200L486.4%2089.6c0-14.08%2011.52-25.6%2025.6-25.6s25.6%2011.52%2025.6%2025.6l0%20396.8%20396.8%200C948.48%20486.4%20960%20497.92%20960%20512z%22%20p-id%3D%221099%22%20fill%3D%22%23bfbfbf%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') no-repeat center center;
+        background-size: 34%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+        margin: auto;
+    }
+
+    .upload .upload-box:hover {
+        cursor: pointer;
+    }
+
+    .upload section:first-child input[type='file'] {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .upload button {
+        margin: 4px;
+    }
+
+    .upload section:first-child img {
+        height: 100%;
+    }
+
+    .upload section:nth-child(2) {
+        padding: 8px 0;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .el-carousel__item {
+        display: flex;
+        justify-content: center;
+    }
+
+    body {
+        max-width: 1000px;
+        background: white;
+        min-height: 1000px;
+        margin: 0 auto;
+    }
+
+    html {
+        background: #d1dbe7;
+    }
+
+    header h1 {
+        font-size: 36px;
+        padding: 12px;
+        margin: 0;
+        color: white;
+    }
+
+    .compare{
+        width: 30px;
+        height: 30px;
+        background: black;
+        margin-right: 20px;
+        background: url('data:image/svg+xml;charset=utf8,%3Csvg%20t%3D%221555846419000%22%20class%3D%22icon%22%20style%3D%22%22%20viewBox%3D%220%200%201024%201024%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20p-id%3D%222291%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%2232%22%20height%3D%2232%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M512%2034.133333c-17.066667%200-34.133333%2012.8-34.133333%2034.133334v162.133333c0%2017.066667%2012.8%2034.133333%2034.133333%2034.133333s34.133333-12.8%2034.133333-34.133333V68.266667c0-17.066667-17.066667-34.133333-34.133333-34.133334zM512%20537.6c-17.066667%200-34.133333%2012.8-34.133333%2034.133333v119.466667c0%2017.066667%2012.8%2034.133333%2034.133333%2034.133333s34.133333-12.8%2034.133333-34.133333v-119.466667c0-21.333333-17.066667-34.133333-34.133333-34.133333zM512%20307.2c-17.066667%200-34.133333%2012.8-34.133333%2034.133333v119.466667c0%2017.066667%2012.8%2034.133333%2034.133333%2034.133333s34.133333-12.8%2034.133333-34.133333V337.066667c0-17.066667-17.066667-29.866667-34.133333-29.866667zM512%20763.733333c-17.066667%200-34.133333%2012.8-34.133333%2034.133334v162.133333c0%2017.066667%2012.8%2034.133333%2034.133333%2034.133333s34.133333-12.8%2034.133333-34.133333v-162.133333c0-21.333333-17.066667-34.133333-34.133333-34.133334zM149.333333%20128H384c25.6%200%2042.666667-17.066667%2042.666667-42.666667s-17.066667-42.666667-42.666667-42.666666H149.333333C89.6%2042.666667%2042.666667%2089.6%2042.666667%20149.333333v725.333334C42.666667%20934.4%2089.6%20981.333333%20149.333333%20981.333333H384c25.6%200%2042.666667-17.066667%2042.666667-42.666666s-17.066667-42.666667-42.666667-42.666667H149.333333c-12.8%200-21.333333-8.533333-21.333333-21.333333v-725.333334c0-12.8%208.533333-21.333333%2021.333333-21.333333zM874.666667%2042.666667H640c-25.6%200-42.666667%2017.066667-42.666667%2042.666666s17.066667%2042.666667%2042.666667%2042.666667h234.666667c12.8%200%2021.333333%208.533333%2021.333333%2021.333333v725.333334c0%2012.8-8.533333%2021.333333-21.333333%2021.333333H640c-25.6%200-42.666667%2017.066667-42.666667%2042.666667s17.066667%2042.666667%2042.666667%2042.666666h234.666667c59.733333%200%20106.666667-46.933333%20106.666666-106.666666v-725.333334C981.333333%2089.6%20934.4%2042.666667%20874.666667%2042.666667z%22%20p-id%3D%222292%22%20fill%3D%22%23FFFFFF%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') no-repeat center center;
+    }
+
+    header{
+        display: flex;
+        background: #409eff;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
+</html>
