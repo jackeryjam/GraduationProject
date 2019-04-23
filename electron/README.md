@@ -16,3 +16,8 @@
     python manage.py runserver 0.0.0.0:8000  
 
 代码执行前需要在js文件夹里面的compare.js和index.js里面将serverUrl改成自己的服务器地址
+
+### 客户端下载地址
+* Mac http://lc-aRUPuNu9.cn-n1.lcfile.com/0fdf6fc56714dd372efa/SegmentationSystem-1.0.0.dmg  
+* window http://lc-arupunu9.cn-n1.lcfile.com/52d6541b3944e3b7798c/SegmentationSystem+Setup+1.0.0.exe  
+* linux http://lc-arupunu9.cn-n1.lcfile.com/2613fde958ac9a8e195c/SegmentationSystem+1.0.0.AppImage  
